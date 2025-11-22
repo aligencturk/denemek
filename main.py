@@ -3,7 +3,8 @@ import shutil
 import logging
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from openai import OpenAI
 from moviepy.editor import VideoFileClip
@@ -13,20 +14,73 @@ import numpy as np
 import cv2
 from dotenv import load_dotenv
 
-# Logging yapılandırması
+# Logging yapılandırması - Sadece console'a yaz
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("app.log", encoding='utf-8')
+        logging.StreamHandler()
     ]
 )
 logger = logging.getLogger(__name__)
 
-load_dotenv()
+# .env dosyasını yükle - BOM karakteri sorununu çöz
+def load_env_safely():
+    """BOM karakteri olan .env dosyasını güvenli şekilde yükler"""
+    env_path = os.path.join(os.getcwd(), '.env')
+    if not os.path.exists(env_path):
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        env_path = os.path.join(script_dir, '.env')
+    
+    if os.path.exists(env_path):
+        logger.info(f".env dosyası bulundu: {env_path}")
+        
+        # BOM karakterini temizle ve yeniden yaz
+        try:
+            with open(env_path, 'r', encoding='utf-8-sig') as f:  # utf-8-sig BOM'u otomatik kaldırır
+                content = f.read()
+            
+            # BOM'suz olarak yeniden yaz (eğer BOM varsa)
+            if content.startswith('\ufeff'):
+                logger.info("BOM karakteri tespit edildi, temizleniyor...")
+                with open(env_path, 'w', encoding='utf-8') as f:
+                    f.write(content)
+                logger.info("BOM karakteri temizlendi")
+        except Exception as e:
+            logger.warning(f".env dosyası okunurken hata: {e}")
+        
+        # override=True ile mevcut environment variable'ları geçersiz kıl
+        result = load_dotenv(dotenv_path=env_path, encoding='utf-8', override=True)
+        logger.info(f"load_dotenv sonucu: {result}")
+    else:
+        logger.warning(".env dosyası bulunamadı, varsayılan yöntem deneniyor...")
+        load_dotenv(encoding='utf-8', override=True)
+
+load_env_safely()
 
 app = FastAPI()
+
+# API key kontrolü - BOM karakteri sorununu çöz
+api_key = os.getenv("OPENAI_API_KEY")
+# BOM karakteri ile kaydedilmiş olabilir, kontrol et
+if not api_key:
+    api_key = os.getenv("\ufeffOPENAI_API_KEY")  # BOM'lu versiyonu dene
+    if api_key:
+        logger.warning("API key BOM karakteri ile bulundu, temizleniyor...")
+
+logger.info(f"API key okundu mu: {bool(api_key)}, Uzunluk: {len(api_key) if api_key else 0}")
+
+if not api_key:
+    logger.error("OPENAI_API_KEY .env dosyasında bulunamadı! Lütfen .env dosyası oluşturup OPENAI_API_KEY=your_key_here şeklinde ekleyin.")
+    raise ValueError("OPENAI_API_KEY bulunamadı. Lütfen .env dosyasını kontrol edin.")
+
+# API key'deki boşlukları ve BOM karakterini temizle
+api_key = api_key.strip()
+if api_key.startswith('\ufeff'):
+    api_key = api_key[1:]  # BOM karakterini kaldır
+
+client = OpenAI(api_key=api_key)
+logger.info("OpenAI API key başarıyla yüklendi.")
 
 # Helper: Saniye cinsinden süreyi SRT formatına (HH:MM:SS,mmm) çevirir
 def format_timestamp(seconds: float) -> str:
@@ -59,13 +113,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# API key'i .env dosyasından al, yoksa fallback olarak hardcoded key kullan
-api_key = os.getenv("OPENAI_API_KEY")
-client = OpenAI(api_key=api_key)
 
-# Root endpoint
+# Static dosyaları serve et (index.html için)
 @app.get("/")
 async def root():
+    """Ana sayfa - index.html dosyasını döndür"""
+    index_path = os.path.join(os.path.dirname(__file__), "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path, media_type="text/html")
     return {
         "message": "Video Altyazı API'si çalışıyor!",
         "docs": "/docs",
