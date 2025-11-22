@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SubtitleAI - AI Powered Video Subtitles</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -51,7 +53,9 @@
             align-items: center;
         }
 
-        body.editor-mode .navbar { display: none; }
+        body.editor-mode .navbar {
+            display: none;
+        }
 
         .logo {
             display: flex;
@@ -124,8 +128,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .btn-primary {
@@ -147,7 +158,9 @@
             box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
         }
 
-        .hidden { display: none; }
+        .hidden {
+            display: none;
+        }
 
         .progress {
             display: none;
@@ -156,7 +169,9 @@
             text-align: center;
         }
 
-        .progress.active { display: block; }
+        .progress.active {
+            display: block;
+        }
 
         .progress-bar {
             width: 100%;
@@ -300,7 +315,9 @@
             display: none;
         }
 
-        .editor-panel.active { display: block; }
+        .editor-panel.active {
+            display: block;
+        }
 
         .panel-header {
             padding: 0 24px 20px;
@@ -470,45 +487,59 @@
             background: var(--bg-light);
         }
 
-/* CSS GÜNCELLEMESİ */
+        /* CSS GÜNCELLEMESİ */
 
-.canvas-wrapper {
-    background: #1e1e1e; /* Siyah değil koyu gri yapalım ki sınır belli olsun */
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    /* Sabit %70 yerine esnek yapı */
-    width: 100%; 
-    max-width: 1000px; 
-    height: calc(100vh - 240px); /* Yüksekliği sabitle */
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-}
+        .canvas-wrapper {
+            background: #1e1e1e;
+            /* Siyah değil koyu gri yapalım ki sınır belli olsun */
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            display: block;
+            /* DÜZELTME: Başlangıçta görünür olmalı */
+            /* Sabit %70 yerine esnek yapı */
+            width: 100%;
+            max-width: 1000px;
+            height: calc(100vh - 240px);
+            /* Yüksekliği sabitle */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
 
-.video-container {
-    position: relative;
-    /* width ve height JS ile dinamik verilecek */
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
-}
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            /* Flexbox kullanarak merkezi hizalama */
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
 
-video {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: fill; /* Container'a tam oturması için */
-}
+        video {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+            object-fit: contain;
+            position: relative;
+            /* Absolute yerine relative */
+            z-index: 1;
+        }
 
-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-}
+        canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 2;
+            /* Canvas boyutu JS ile videoya eşitlenecek */
+        }
 
         .editor-timeline {
             position: fixed;
@@ -651,7 +682,7 @@ canvas {
             display: none;
         }
 
-        .progress.active { 
+        .progress.active {
             display: block;
         }
 
@@ -704,8 +735,13 @@ canvas {
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .language-modal-content {
@@ -721,11 +757,12 @@ canvas {
         }
 
         @keyframes slideUp {
-            from { 
+            from {
                 opacity: 0;
                 transform: translateY(30px) scale(0.95);
             }
-            to { 
+
+            to {
                 opacity: 1;
                 transform: translateY(0) scale(1);
             }
@@ -851,6 +888,7 @@ canvas {
         }
     </style>
 </head>
+
 <body>
     <div class="navbar" style="display: none;">
         <div class="logo">
@@ -870,7 +908,8 @@ canvas {
                 <div class="upload-icon">📹</div>
                 <div style="font-size: 24px; font-weight: 700; margin: 20px 0 8px;">Drop your video here</div>
                 <div style="color: var(--text-light); margin-bottom: 20px;">or click to browse files</div>
-                <div style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 8px 16px; border-radius: 8px; display: inline-block; font-size: 14px; font-weight: 500;">
+                <div
+                    style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 8px 16px; border-radius: 8px; display: inline-block; font-size: 14px; font-weight: 500;">
                     MP4, MOV, AVI up to 500MB
                 </div>
                 <input type="file" id="videoInput" accept="video/*" style="display: none;">
@@ -888,423 +927,465 @@ canvas {
     </div>
 
     <div class="video-editor" id="videoEditor">
-            <div class="editor-topbar">
-                <div class="topbar-left">
-                    <div class="topbar-logo">🎬 SubtitleAI</div>
-                    <span id="videoName" style="color: var(--text-light); font-size: 14px;"></span>
-                </div>
-                <button class="btn-download" id="exportBtn">💾 Download Video</button>
+        <div class="editor-topbar">
+            <div class="topbar-left">
+                <div class="topbar-logo">🎬 SubtitleAI</div>
+                <span id="videoName" style="color: var(--text-light); font-size: 14px;"></span>
+            </div>
+            <button class="btn-download" id="exportBtn">💾 Download Video</button>
+        </div>
+
+        <div class="editor-sidebar">
+            <div class="sidebar-tab active" data-panel="auto">
+                <div class="sidebar-tab-icon">🎬</div>
+                <div>Otomatik<br>Alt Yazı</div>
+            </div>
+            <div class="sidebar-tab" data-panel="image">
+                <div class="sidebar-tab-icon">🖼️</div>
+                <div>Görsel<br>Ekle</div>
+            </div>
+            <div class="sidebar-tab" data-panel="presets">
+                <div class="sidebar-tab-icon">✨</div>
+                <div>Şablonlar</div>
+            </div>
+        </div>
+
+        <div class="editor-panel active" id="panelAuto">
+            <div class="panel-header">
+                <div class="panel-title">🎬 Otomatik Alt Yazı</div>
+                <div class="panel-subtitle">Yapay zeka ile otomatik transkript ve profesyonel stil ayarları</div>
             </div>
 
-            <div class="editor-sidebar">
-                <div class="sidebar-tab active" data-panel="auto">
-                    <div class="sidebar-tab-icon">🎬</div>
-                    <div>Otomatik<br>Alt Yazı</div>
+            <!-- Video Yükleme -->
+            <div class="panel-section" id="videoUploadPanel">
+                <div class="section-title">📹 VİDEO YÜKLE</div>
+                <div style="border: 2px dashed var(--border); border-radius: 12px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg-light);"
+                    id="videoDropArea">
+                    <div style="font-size: 48px; margin-bottom: 12px;">🎬</div>
+                    <div style="font-weight: 600; margin-bottom: 8px;">Videoyu buraya sürükle</div>
+                    <div style="font-size: 12px; color: var(--text-light); margin-bottom: 12px;">veya dosya seçmek için
+                        tıkla</div>
+                    <div
+                        style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 6px 12px; border-radius: 6px; display: inline-block; font-size: 12px; font-weight: 500;">
+                        MP4, MOV, AVI
+                    </div>
                 </div>
-                <div class="sidebar-tab" data-panel="image">
-                    <div class="sidebar-tab-icon">🖼️</div>
-                    <div>Görsel<br>Ekle</div>
-                </div>
-                <div class="sidebar-tab" data-panel="presets">
-                    <div class="sidebar-tab-icon">✨</div>
-                    <div>Şablonlar</div>
-                </div>
+                <input type="file" id="videoInputEditor" accept="video/*" style="display: none;">
             </div>
 
-            <div class="editor-panel active" id="panelAuto">
-                <div class="panel-header">
-                    <div class="panel-title">🎬 Otomatik Alt Yazı</div>
-                    <div class="panel-subtitle">Yapay zeka ile otomatik transkript ve profesyonel stil ayarları</div>
-                </div>
+            <div class="section-divider" id="transcriptDivider" style="display: none;"></div>
 
-                <!-- Video Yükleme -->
-                <div class="panel-section" id="videoUploadPanel">
-                    <div class="section-title">📹 VİDEO YÜKLE</div>
-                    <div style="border: 2px dashed var(--border); border-radius: 12px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg-light);" id="videoDropArea">
-                        <div style="font-size: 48px; margin-bottom: 12px;">🎬</div>
-                        <div style="font-weight: 600; margin-bottom: 8px;">Videoyu buraya sürükle</div>
-                        <div style="font-size: 12px; color: var(--text-light); margin-bottom: 12px;">veya dosya seçmek için tıkla</div>
-                        <div style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 6px 12px; border-radius: 6px; display: inline-block; font-size: 12px; font-weight: 500;">
-                            MP4, MOV, AVI
+            <!-- AI Transkript -->
+            <div class="panel-section" id="transcriptPanel" style="display: none;">
+                <div class="section-title">🤖 YAPAY ZEKA TRANSKRİPT</div>
+                <button id="transcribeBtn" class="preset-btn"
+                    style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; margin-bottom: 0;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 28px;">⚡</span>
+                        <div style="text-align: left; flex: 1;">
+                            <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Alt Yazı Oluştur</div>
+                            <div style="font-size: 12px; opacity: 0.95;">OpenAI Whisper ile otomatik transkript</div>
                         </div>
                     </div>
-                    <input type="file" id="videoInputEditor" accept="video/*" style="display: none;">
+                </button>
+            </div>
+
+            <div class="section-divider" id="languageDivider" style="display: none;"></div>
+
+            <!-- Çok Dilli Sistem -->
+            <div class="panel-section" id="languageSection" style="display: none;">
+                <div class="section-title">🌍 ÇOK DİLLİ ALTYAZI</div>
+
+                <!-- Tespit edilen dil -->
+                <div id="detectedLanguageInfo"
+                    style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.08)); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 24px;">🎤</span>
+                        <div style="flex: 1;">
+                            <div
+                                style="font-size: 11px; color: #059669; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                                Algılanan Dil</div>
+                            <div id="detectedLanguageName"
+                                style="font-size: 15px; font-weight: 700; color: var(--text-dark);">Yükleniyor...</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="section-divider" id="transcriptDivider" style="display: none;"></div>
-
-                <!-- AI Transkript -->
-                <div class="panel-section" id="transcriptPanel" style="display: none;">
-                    <div class="section-title">🤖 YAPAY ZEKA TRANSKRİPT</div>
-                    <button id="transcribeBtn" class="preset-btn" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; margin-bottom: 0;">
+                <!-- Dil seçici -->
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Hedef Dil Seçin</label>
+                    </div>
+                    <button id="languageSelectorBtn" class="preset-btn"
+                        style="background: white; margin-bottom: 0; position: relative;">
                         <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="font-size: 28px;">⚡</span>
+                            <span id="selectedLangFlag" style="font-size: 28px;">🌐</span>
                             <div style="text-align: left; flex: 1;">
-                                <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Alt Yazı Oluştur</div>
-                                <div style="font-size: 12px; opacity: 0.95;">OpenAI Whisper ile otomatik transkript</div>
-                            </div>
-                        </div>
-                    </button>
-                </div>
-
-                <div class="section-divider" id="languageDivider" style="display: none;"></div>
-
-                <!-- Çok Dilli Sistem -->
-                <div class="panel-section" id="languageSection" style="display: none;">
-                    <div class="section-title">🌍 ÇOK DİLLİ ALTYAZI</div>
-                    
-                    <!-- Tespit edilen dil -->
-                    <div id="detectedLanguageInfo" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.08)); border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid rgba(16, 185, 129, 0.2);">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="font-size: 24px;">🎤</span>
-                            <div style="flex: 1;">
-                                <div style="font-size: 11px; color: #059669; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Algılanan Dil</div>
-                                <div id="detectedLanguageName" style="font-size: 15px; font-weight: 700; color: var(--text-dark);">Yükleniyor...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Dil seçici -->
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Hedef Dil Seçin</label>
-                        </div>
-                        <button id="languageSelectorBtn" class="preset-btn" style="background: white; margin-bottom: 0; position: relative;">
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <span id="selectedLangFlag" style="font-size: 28px;">🌐</span>
-                                <div style="text-align: left; flex: 1;">
-                                    <div style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 2px;" id="selectedLangName">Dil Seçin</div>
-                                    <div style="font-size: 11px; color: var(--text-light);">Altyazılar otomatik çevrilecek</div>
+                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 2px;"
+                                    id="selectedLangName">Dil Seçin</div>
+                                <div style="font-size: 11px; color: var(--text-light);">Altyazılar otomatik çevrilecek
                                 </div>
-                                <span style="font-size: 20px; color: var(--text-light);">▼</span>
                             </div>
-                        </button>
-                    </div>
-
-                    <!-- Çevir butonu -->
-                    <button id="translateBtn" class="preset-btn" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; margin-top: 12px; display: none;">
-                        <div style="display: flex; align-items: center; gap: 12px; justify-content: center;">
-                            <span style="font-size: 24px;">🔄</span>
-                            <div style="font-weight: 700; font-size: 15px;">Altyazıları Çevir</div>
+                            <span style="font-size: 20px; color: var(--text-light);">▼</span>
                         </div>
                     </button>
                 </div>
 
-                <div class="section-divider"></div>
-
-                <!-- Metin Ayarları -->
-                <div class="panel-section">
-                    <div class="section-title">✏️ METİN AYARLARI</div>
-                    
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Yazı Boyutu</label>
-                            <span class="value-display"><span id="fontSizeVal">48</span>px</span>
-                        </div>
-                        <input type="range" id="fontSize" min="20" max="120" value="48">
+                <!-- Çevir butonu -->
+                <button id="translateBtn" class="preset-btn"
+                    style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; margin-top: 12px; display: none;">
+                    <div style="display: flex; align-items: center; gap: 12px; justify-content: center;">
+                        <span style="font-size: 24px;">🔄</span>
+                        <div style="font-weight: 700; font-size: 15px;">Altyazıları Çevir</div>
                     </div>
+                </button>
+            </div>
 
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Yazı Tipi</label>
-                        </div>
-                        <select id="fontFamily">
-                            <option value="Arial">Arial (Klasik)</option>
-                            <option value="'Arial Black'">Arial Black (Kalın)</option>
-                            <option value="Impact">Impact (Güçlü)</option>
-                            <option value="'Segoe UI'">Segoe UI (Modern)</option>
-                            <option value="Georgia">Georgia (Serif)</option>
-                            <option value="Verdana">Verdana (Web)</option>
-                            <option value="'Courier New'">Courier (Mono)</option>
-                            <option value="'Comic Sans MS'">Comic Sans (Casual)</option>
-                        </select>
+            <div class="section-divider"></div>
+
+            <!-- Metin Ayarları -->
+            <div class="panel-section">
+                <div class="section-title">✏️ METİN AYARLARI</div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Yazı Boyutu</label>
+                        <span class="value-display"><span id="fontSizeVal">48</span>px</span>
                     </div>
+                    <input type="range" id="fontSize" min="20" max="120" value="48">
+                </div>
 
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Yazı Kalınlığı</label>
-                        </div>
-                        <div class="toggle-group">
-                            <button class="toggle-btn font-weight-btn" data-weight="normal">Normal</button>
-                            <button class="toggle-btn font-weight-btn active" data-weight="bold">Kalın</button>
-                            <button class="toggle-btn font-weight-btn" data-weight="900">Ekstra</button>
-                        </div>
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Yazı Tipi</label>
                     </div>
+                    <select id="fontFamily">
+                        <option value="Arial">Arial (Klasik)</option>
+                        <option value="'Arial Black'">Arial Black (Kalın)</option>
+                        <option value="Impact">Impact (Güçlü)</option>
+                        <option value="'Segoe UI'">Segoe UI (Modern)</option>
+                        <option value="Georgia">Georgia (Serif)</option>
+                        <option value="Verdana">Verdana (Web)</option>
+                        <option value="'Courier New'">Courier (Mono)</option>
+                        <option value="'Comic Sans MS'">Comic Sans (Casual)</option>
+                    </select>
+                </div>
 
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Hizalama</label>
-                        </div>
-                        <div class="toggle-group">
-                            <button class="toggle-btn align-btn" data-align="left">◀ Sol</button>
-                            <button class="toggle-btn align-btn active" data-align="center">▪ Orta</button>
-                            <button class="toggle-btn align-btn" data-align="right">▶ Sağ</button>
-                        </div>
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Yazı Kalınlığı</label>
                     </div>
-
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Dikey Konum</label>
-                            <span class="value-display"><span id="vPosVal">85</span>%</span>
-                        </div>
-                        <input type="range" id="vPos" min="0" max="100" value="85">
+                    <div class="toggle-group">
+                        <button class="toggle-btn font-weight-btn" data-weight="normal">Normal</button>
+                        <button class="toggle-btn font-weight-btn active" data-weight="bold">Kalın</button>
+                        <button class="toggle-btn font-weight-btn" data-weight="900">Ekstra</button>
                     </div>
                 </div>
 
-                <div class="section-divider"></div>
-
-                <!-- Renk Ayarları -->
-                <div class="panel-section">
-                    <div class="section-title">🎨 RENK PALETİ</div>
-
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Metin Rengi</label>
-                            <input type="color" id="textColor" value="#FFFFFF">
-                        </div>
-                        <div class="color-swatch-group">
-                            <div class="color-swatch color-preset" style="background: #FFFFFF;" data-color="#FFFFFF"></div>
-                            <div class="color-swatch color-preset" style="background: #000000;" data-color="#000000"></div>
-                            <div class="color-swatch color-preset" style="background: #FF0000;" data-color="#FF0000"></div>
-                            <div class="color-swatch color-preset" style="background: #00FF00;" data-color="#00FF00"></div>
-                            <div class="color-swatch color-preset" style="background: #6366f1;" data-color="#6366f1"></div>
-                        </div>
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Hizalama</label>
                     </div>
-
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Vurgu Rengi (Aktif Kelime)</label>
-                            <input type="color" id="highlightColor" value="#FFFF00">
-                        </div>
-                        <div class="color-swatch-group">
-                            <div class="color-swatch highlight-preset" style="background: #FFFF00;" data-color="#FFFF00"></div>
-                            <div class="color-swatch highlight-preset" style="background: #FE2C55;" data-color="#FE2C55"></div>
-                            <div class="color-swatch highlight-preset" style="background: #00D9FF;" data-color="#00D9FF"></div>
-                            <div class="color-swatch highlight-preset" style="background: #FF6B00;" data-color="#FF6B00"></div>
-                            <div class="color-swatch highlight-preset" style="background: #10b981;" data-color="#10b981"></div>
-                        </div>
+                    <div class="toggle-group">
+                        <button class="toggle-btn align-btn" data-align="left">◀ Sol</button>
+                        <button class="toggle-btn align-btn active" data-align="center">▪ Orta</button>
+                        <button class="toggle-btn align-btn" data-align="right">▶ Sağ</button>
                     </div>
                 </div>
 
-                <div class="section-divider"></div>
-
-                <!-- Efekt Ayarları -->
-                <div class="panel-section">
-                    <div class="section-title">✨ EFEKTLER</div>
-
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Kontur Kalınlığı</label>
-                            <span class="value-display"><span id="strokeWidthVal">4</span>px</span>
-                        </div>
-                        <input type="range" id="strokeWidth" min="0" max="12" value="4">
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Dikey Konum</label>
+                        <span class="value-display"><span id="vPosVal">85</span>%</span>
                     </div>
+                    <input type="range" id="vPos" min="0" max="100" value="85">
+                </div>
+            </div>
 
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Kontur Rengi</label>
-                            <input type="color" id="strokeColor" value="#000000">
-                        </div>
+            <div class="section-divider"></div>
+
+            <!-- Renk Ayarları -->
+            <div class="panel-section">
+                <div class="section-title">🎨 RENK PALETİ</div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Metin Rengi</label>
+                        <input type="color" id="textColor" value="#FFFFFF">
                     </div>
-
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Gölge Bulanıklığı</label>
-                            <span class="value-display"><span id="shadowBlurVal">0</span>px</span>
-                        </div>
-                        <input type="range" id="shadowBlur" min="0" max="20" value="0">
+                    <div class="color-swatch-group">
+                        <div class="color-swatch color-preset" style="background: #FFFFFF;" data-color="#FFFFFF"></div>
+                        <div class="color-swatch color-preset" style="background: #000000;" data-color="#000000"></div>
+                        <div class="color-swatch color-preset" style="background: #FF0000;" data-color="#FF0000"></div>
+                        <div class="color-swatch color-preset" style="background: #00FF00;" data-color="#00FF00"></div>
+                        <div class="color-swatch color-preset" style="background: #6366f1;" data-color="#6366f1"></div>
                     </div>
+                </div>
 
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Arka Plan Opaklığı</label>
-                            <span class="value-display"><span id="bgOpacityVal">75</span>%</span>
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Vurgu Rengi (Aktif Kelime)</label>
+                        <input type="color" id="highlightColor" value="#FFFF00">
+                    </div>
+                    <div class="color-swatch-group">
+                        <div class="color-swatch highlight-preset" style="background: #FFFF00;" data-color="#FFFF00">
                         </div>
-                        <input type="range" id="bgOpacity" min="0" max="100" value="75">
+                        <div class="color-swatch highlight-preset" style="background: #FE2C55;" data-color="#FE2C55">
+                        </div>
+                        <div class="color-swatch highlight-preset" style="background: #00D9FF;" data-color="#00D9FF">
+                        </div>
+                        <div class="color-swatch highlight-preset" style="background: #FF6B00;" data-color="#FF6B00">
+                        </div>
+                        <div class="color-swatch highlight-preset" style="background: #10b981;" data-color="#10b981">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Hidden legacy panels - keeping for backwards compatibility -->
-            <div class="editor-panel" id="panelText" style="display:none !important;"></div>
-            <div class="editor-panel" id="panelStyle" style="display:none !important;"></div>
+            <div class="section-divider"></div>
 
-            <div class="editor-panel" id="panelImage">
-                <div class="panel-header">
-                    <div class="panel-title">🖼️ Görsel Ekleme</div>
-                    <div class="panel-subtitle">Yapay zeka ile arka plan kaldırma ve video üzerine görsel yerleştirme</div>
+            <!-- Efekt Ayarları -->
+            <div class="panel-section">
+                <div class="section-title">✨ EFEKTLER</div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Kontur Kalınlığı</label>
+                        <span class="value-display"><span id="strokeWidthVal">4</span>px</span>
+                    </div>
+                    <input type="range" id="strokeWidth" min="0" max="12" value="4">
                 </div>
 
-                <!-- Görsel Yükleme -->
-                <div class="panel-section">
-                    <div class="section-title">📤 GÖRSEL YÜKLE</div>
-                    <div style="border: 2px dashed var(--border); border-radius: 12px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg-light);" id="imageDropArea">
-                        <div style="font-size: 48px; margin-bottom: 12px;">🖼️</div>
-                        <div style="font-weight: 600; margin-bottom: 8px;">Görseli buraya sürükle</div>
-                        <div style="font-size: 12px; color: var(--text-light); margin-bottom: 12px;">veya dosya seçmek için tıkla</div>
-                        <div style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 6px 12px; border-radius: 6px; display: inline-block; font-size: 12px; font-weight: 500;">
-                            PNG, JPG, JPEG
-                        </div>
-                    </div>
-                    <input type="file" id="imageInput" accept="image/*" style="display: none;">
-                </div>
-
-                <!-- Görsel Önizleme -->
-                <div class="panel-section" id="imagePreviewSection" style="display: none;">
-                    <div class="section-title">👁️ ÖNİZLEME</div>
-                    <div style="text-align: center; margin-bottom: 16px;">
-                        <img id="imagePreview" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                    </div>
-                    <button id="removeImageBtn" class="preset-btn" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none;">
-                        <div style="display: flex; align-items: center; gap: 12px; justify-content: center;">
-                            <span style="font-size: 20px;">🗑️</span>
-                            <div style="font-weight: 700; font-size: 14px;">Görseli Kaldır</div>
-                        </div>
-                    </button>
-                </div>
-
-                <div class="section-divider" id="imageDivider" style="display: none;"></div>
-
-                <!-- AI Arka Plan Kaldırma -->
-                <div class="panel-section" id="removeBackgroundSection" style="display: none;">
-                    <div class="section-title">🤖 YAPAY ZEKA İŞLEME</div>
-                    <button id="removeBgBtn" class="preset-btn" style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; margin-bottom: 0;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <span style="font-size: 28px;">✂️</span>
-                            <div style="text-align: left; flex: 1;">
-                                <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Arka Planı Kaldır</div>
-                                <div style="font-size: 12px; opacity: 0.95;">AI ile otomatik arka plan silme</div>
-                            </div>
-                        </div>
-                    </button>
-                </div>
-
-                <div class="section-divider" id="imageControlsDivider" style="display: none;"></div>
-
-                <!-- Görsel Ayarları -->
-                <div class="panel-section" id="imageControlsSection" style="display: none;">
-                    <div class="section-title">⚙️ GÖRSEL AYARLARI</div>
-                    
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Boyut</label>
-                            <span class="value-display"><span id="imageSizeVal">30</span>%</span>
-                        </div>
-                        <input type="range" id="imageSize" min="5" max="100" value="30">
-                    </div>
-
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Yatay Konum</label>
-                            <span class="value-display"><span id="imageXVal">50</span>%</span>
-                        </div>
-                        <input type="range" id="imageX" min="0" max="100" value="50">
-                    </div>
-
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Dikey Konum</label>
-                            <span class="value-display"><span id="imageYVal">20</span>%</span>
-                        </div>
-                        <input type="range" id="imageY" min="0" max="100" value="20">
-                    </div>
-
-                    <div class="control-group">
-                        <div class="control-label">
-                            <label>Opaklık</label>
-                            <span class="value-display"><span id="imageOpacityVal">100</span>%</span>
-                        </div>
-                        <input type="range" id="imageOpacity" min="0" max="100" value="100">
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Kontur Rengi</label>
+                        <input type="color" id="strokeColor" value="#000000">
                     </div>
                 </div>
-            </div>
 
-            <div class="editor-panel" id="panelPresets">
-                <div class="panel-header">
-                    <div class="panel-title">✨ Profesyonel Şablonlar</div>
-                    <div class="panel-subtitle">Hazır stil şablonlarıyla tek tıkla profesyonel görünüm</div>
-                </div>
-
-                <div class="panel-section">
-                    <button class="preset-btn" data-preset="youtube">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <span style="font-size: 32px;">🎥</span>
-                            <div style="flex: 1; text-align: left;">
-                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">YouTube Klasik</div>
-                                <div style="font-size: 12px; color: var(--text-light);">Beyaz metin, kırmızı vurgu, kalın kontur</div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button class="preset-btn" data-preset="tiktok">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <span style="font-size: 32px;">📱</span>
-                            <div style="flex: 1; text-align: left;">
-                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">TikTok Dinamik</div>
-                                <div style="font-size: 12px; color: var(--text-light);">Orta hizalı, pembe vurgu, enerjik</div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button class="preset-btn" data-preset="instagram">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <span style="font-size: 32px;">📸</span>
-                            <div style="flex: 1; text-align: left;">
-                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">Instagram Story</div>
-                                <div style="font-size: 12px; color: var(--text-light);">Minimal gölge, turuncu vurgu, temiz</div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button class="preset-btn" data-preset="professional">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <span style="font-size: 32px;">💼</span>
-                            <div style="flex: 1; text-align: left;">
-                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">Kurumsal</div>
-                                <div style="font-size: 12px; color: var(--text-light);">Siyah metin, yeşil vurgu, profesyonel</div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button class="preset-btn" data-preset="gaming">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <span style="font-size: 32px;">🎮</span>
-                            <div style="flex: 1; text-align: left;">
-                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">Gaming</div>
-                                <div style="font-size: 12px; color: var(--text-light);">Amber metin, mavi vurgu, güçlü gölge</div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button class="preset-btn" data-preset="minimal">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <span style="font-size: 32px;">⚪</span>
-                            <div style="flex: 1; text-align: left;">
-                                <div style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">Minimal</div>
-                                <div style="font-size: 12px; color: var(--text-light);">Sade beyaz, ince kontur, modern</div>
-                            </div>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
-            <div class="editor-main">
-                <div class="canvas-wrapper">
-                    <div class="video-container">
-                        <video id="video" crossorigin="anonymous"></video>
-                        <canvas id="canvas"></canvas>
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Gölge Bulanıklığı</label>
+                        <span class="value-display"><span id="shadowBlurVal">0</span>px</span>
                     </div>
+                    <input type="range" id="shadowBlur" min="0" max="20" value="0">
                 </div>
-            </div>
 
-            <div class="editor-timeline">
-                <div class="timeline-controls">
-                    <button class="play-btn-mini" id="playBtn">▶️</button>
-                    <input type="range" id="timeline" min="0" max="100" value="0" style="flex: 1;">
-                    <span id="timeDisplay" style="font-size: 13px; font-weight: 600; min-width: 100px; text-align: right;">0:00 / 0:00</span>
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Arka Plan Opaklığı</label>
+                        <span class="value-display"><span id="bgOpacityVal">75</span>%</span>
+                    </div>
+                    <input type="range" id="bgOpacity" min="0" max="100" value="75">
                 </div>
             </div>
         </div>
+
+        <!-- Hidden legacy panels - keeping for backwards compatibility -->
+        <div class="editor-panel" id="panelText" style="display:none !important;"></div>
+        <div class="editor-panel" id="panelStyle" style="display:none !important;"></div>
+
+        <div class="editor-panel" id="panelImage">
+            <div class="panel-header">
+                <div class="panel-title">🖼️ Görsel Ekleme</div>
+                <div class="panel-subtitle">Yapay zeka ile arka plan kaldırma ve video üzerine görsel yerleştirme</div>
+            </div>
+
+            <!-- Görsel Yükleme -->
+            <div class="panel-section">
+                <div class="section-title">📤 GÖRSEL YÜKLE</div>
+                <div style="border: 2px dashed var(--border); border-radius: 12px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg-light);"
+                    id="imageDropArea">
+                    <div style="font-size: 48px; margin-bottom: 12px;">🖼️</div>
+                    <div style="font-weight: 600; margin-bottom: 8px;">Görseli buraya sürükle</div>
+                    <div style="font-size: 12px; color: var(--text-light); margin-bottom: 12px;">veya dosya seçmek için
+                        tıkla</div>
+                    <div
+                        style="background: rgba(99, 102, 241, 0.1); color: var(--primary); padding: 6px 12px; border-radius: 6px; display: inline-block; font-size: 12px; font-weight: 500;">
+                        PNG, JPG, JPEG
+                    </div>
+                </div>
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Görsel Önizleme -->
+            <div class="panel-section" id="imagePreviewSection" style="display: none;">
+                <div class="section-title">👁️ ÖNİZLEME</div>
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <img id="imagePreview"
+                        style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                </div>
+                <button id="removeImageBtn" class="preset-btn"
+                    style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none;">
+                    <div style="display: flex; align-items: center; gap: 12px; justify-content: center;">
+                        <span style="font-size: 20px;">🗑️</span>
+                        <div style="font-weight: 700; font-size: 14px;">Görseli Kaldır</div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="section-divider" id="imageDivider" style="display: none;"></div>
+
+            <!-- AI Arka Plan Kaldırma -->
+            <div class="panel-section" id="removeBackgroundSection" style="display: none;">
+                <div class="section-title">🤖 YAPAY ZEKA İŞLEME</div>
+                <button id="removeBgBtn" class="preset-btn"
+                    style="background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; margin-bottom: 0;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 28px;">✂️</span>
+                        <div style="text-align: left; flex: 1;">
+                            <div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Arka Planı Kaldır</div>
+                            <div style="font-size: 12px; opacity: 0.95;">AI ile otomatik arka plan silme</div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="section-divider" id="imageControlsDivider" style="display: none;"></div>
+
+            <!-- Görsel Ayarları -->
+            <div class="panel-section" id="imageControlsSection" style="display: none;">
+                <div class="section-title">⚙️ GÖRSEL AYARLARI</div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Boyut</label>
+                        <span class="value-display"><span id="imageSizeVal">30</span>%</span>
+                    </div>
+                    <input type="range" id="imageSize" min="5" max="100" value="30">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Yatay Konum</label>
+                        <span class="value-display"><span id="imageXVal">50</span>%</span>
+                    </div>
+                    <input type="range" id="imageX" min="0" max="100" value="50">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Dikey Konum</label>
+                        <span class="value-display"><span id="imageYVal">20</span>%</span>
+                    </div>
+                    <input type="range" id="imageY" min="0" max="100" value="20">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-label">
+                        <label>Opaklık</label>
+                        <span class="value-display"><span id="imageOpacityVal">100</span>%</span>
+                    </div>
+                    <input type="range" id="imageOpacity" min="0" max="100" value="100">
+                </div>
+            </div>
+        </div>
+
+        <div class="editor-panel" id="panelPresets">
+            <div class="panel-header">
+                <div class="panel-title">✨ Profesyonel Şablonlar</div>
+                <div class="panel-subtitle">Hazır stil şablonlarıyla tek tıkla profesyonel görünüm</div>
+            </div>
+
+            <div class="panel-section">
+                <button class="preset-btn" data-preset="youtube">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 32px;">🎥</span>
+                        <div style="flex: 1; text-align: left;">
+                            <div
+                                style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">
+                                YouTube Klasik</div>
+                            <div style="font-size: 12px; color: var(--text-light);">Beyaz metin, kırmızı vurgu, kalın
+                                kontur</div>
+                        </div>
+                    </div>
+                </button>
+
+                <button class="preset-btn" data-preset="tiktok">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 32px;">📱</span>
+                        <div style="flex: 1; text-align: left;">
+                            <div
+                                style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">
+                                TikTok Dinamik</div>
+                            <div style="font-size: 12px; color: var(--text-light);">Orta hizalı, pembe vurgu, enerjik
+                            </div>
+                        </div>
+                    </div>
+                </button>
+
+                <button class="preset-btn" data-preset="instagram">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 32px;">📸</span>
+                        <div style="flex: 1; text-align: left;">
+                            <div
+                                style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">
+                                Instagram Story</div>
+                            <div style="font-size: 12px; color: var(--text-light);">Minimal gölge, turuncu vurgu, temiz
+                            </div>
+                        </div>
+                    </div>
+                </button>
+
+                <button class="preset-btn" data-preset="professional">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 32px;">💼</span>
+                        <div style="flex: 1; text-align: left;">
+                            <div
+                                style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">
+                                Kurumsal</div>
+                            <div style="font-size: 12px; color: var(--text-light);">Siyah metin, yeşil vurgu,
+                                profesyonel</div>
+                        </div>
+                    </div>
+                </button>
+
+                <button class="preset-btn" data-preset="gaming">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 32px;">🎮</span>
+                        <div style="flex: 1; text-align: left;">
+                            <div
+                                style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">
+                                Gaming</div>
+                            <div style="font-size: 12px; color: var(--text-light);">Amber metin, mavi vurgu, güçlü gölge
+                            </div>
+                        </div>
+                    </div>
+                </button>
+
+                <button class="preset-btn" data-preset="minimal">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 32px;">⚪</span>
+                        <div style="flex: 1; text-align: left;">
+                            <div
+                                style="font-weight: 700; font-size: 15px; color: var(--text-dark); margin-bottom: 4px;">
+                                Minimal</div>
+                            <div style="font-size: 12px; color: var(--text-light);">Sade beyaz, ince kontur, modern
+                            </div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="editor-main">
+            <div class="canvas-wrapper">
+                <div class="video-container">
+                    <video id="video" crossorigin="anonymous"></video>
+                    <canvas id="canvas"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="editor-timeline">
+            <div class="timeline-controls">
+                <button class="play-btn-mini" id="playBtn">▶️</button>
+                <input type="range" id="timeline" min="0" max="100" value="0" style="flex: 1;">
+                <span id="timeDisplay"
+                    style="font-size: 13px; font-weight: 600; min-width: 100px; text-align: right;">0:00 / 0:00</span>
+            </div>
+        </div>
+    </div>
     </div>
 
     <script>
@@ -1433,18 +1514,18 @@ canvas {
 
         // Video yükleme (Editör içinde)
         videoDropArea.addEventListener('click', () => videoInputEditor.click());
-        
+
         videoDropArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             videoDropArea.style.borderColor = 'var(--primary)';
             videoDropArea.style.background = 'rgba(99, 102, 241, 0.05)';
         });
-        
+
         videoDropArea.addEventListener('dragleave', () => {
             videoDropArea.style.borderColor = 'var(--border)';
             videoDropArea.style.background = 'var(--bg-light)';
         });
-        
+
         videoDropArea.addEventListener('drop', (e) => {
             e.preventDefault();
             videoDropArea.style.borderColor = 'var(--border)';
@@ -1454,7 +1535,7 @@ canvas {
                 handleVideoSelect(file);
             }
         });
-        
+
         videoInputEditor.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) handleVideoSelect(file);
@@ -1464,52 +1545,48 @@ canvas {
             videoFile = file;
             // Video'yu yükle ve önizlemeyi göster
             video.src = URL.createObjectURL(file);
-            document.getElementById('videoName').textContent = file.name;
-            
+            const videoNameEl = document.getElementById('videoName');
+            if (videoNameEl) videoNameEl.textContent = file.name;
+
             // Transkript panelini göster
-            document.getElementById('transcriptDivider').style.display = 'block';
-            document.getElementById('transcriptPanel').style.display = 'block';
-            
-            // Video yükleme panelini gizle
-            document.getElementById('videoUploadPanel').style.display = 'none';
-            
+            const transcriptDivider = document.getElementById('transcriptDivider');
+            const transcriptPanel = document.getElementById('transcriptPanel');
+            if (transcriptDivider) transcriptDivider.style.display = 'block';
+            if (transcriptPanel) transcriptPanel.style.display = 'block';
+
+            // Video yükleme panelini gizle (sadece upload area'yı gizle, video container'ı görünür kalmalı)
+            const videoUploadPanel = document.getElementById('videoUploadPanel');
+            if (videoUploadPanel) videoUploadPanel.style.display = 'none';
+
+            // DÜZELTME: Canvas wrapper'ın görünür olduğundan emin ol
+            const canvasWrapper = document.querySelector('.canvas-wrapper');
+            if (canvasWrapper) {
+                canvasWrapper.style.display = 'flex'; // Flex yapısını koru
+            }
+
+            // DÜZELTME: Video container'ın görünür olduğundan emin ol
+            const videoContainer = document.querySelector('.video-container');
+            if (videoContainer) {
+                videoContainer.style.display = 'flex';
+            }
+
+            // DÜZELTME: Video ve canvas elementlerinin görünür olduğundan emin ol
+            if (video) {
+                video.style.display = 'block';
+            }
+            if (canvas) {
+                canvas.style.display = 'block';
+            }
+
             video.addEventListener('loadedmetadata', () => {
-                // DÜZELTME: Wrapper'ın tam boyutunu alabilmek için kısa bir gecikme
-                setTimeout(() => {
-                    const videoContainer = document.querySelector('.video-container');
-                    const wrapper = document.querySelector('.canvas-wrapper');
-                    
-                    const vidW = video.videoWidth;
-                    const vidH = video.videoHeight;
-                    const aspectRatio = vidW / vidH;
-                    
-                    // Wrapper boyutlarını kontrol et
-                    const maxW = Math.max(wrapper.clientWidth - 40, 800);
-                    const maxH = Math.max(wrapper.clientHeight - 40, 450);
-                    
-                    console.log('Video boyutu:', vidW, 'x', vidH);
-                    console.log('Wrapper boyutu:', maxW, 'x', maxH);
-                    
-                    let finalW, finalH;
-                    if (maxW / maxH > aspectRatio) {
-                        finalH = maxH;
-                        finalW = finalH * aspectRatio;
-                    } else {
-                        finalW = maxW;
-                        finalH = finalW / aspectRatio;
-                    }
-                    
-                    videoContainer.style.width = `${finalW}px`;
-                    videoContainer.style.height = `${finalH}px`;
-                    canvas.width = vidW;
-                    canvas.height = vidH;
-                    timeline.max = video.duration;
-                    
-                    console.log('Container ayarlandı:', finalW, 'x', finalH);
-                    renderLoop();
-                }, 100);
+                // Yeni resize fonksiyonunu çağır
+                resizeVideoContainer();
+                renderLoop();
             });
-            
+
+            // Pencere boyutu değiştiğinde yeniden boyutlandır
+            window.addEventListener('resize', resizeVideoContainer);
+
             video.addEventListener('timeupdate', () => {
                 timeline.value = video.currentTime;
                 const c = formatTime(video.currentTime);
@@ -1518,20 +1595,63 @@ canvas {
             });
         }
 
+        function resizeVideoContainer() {
+            if (!video || !video.videoWidth) return;
+
+            // Video boyutlarını al (orijinal çözünürlük)
+            const vidW = video.videoWidth;
+            const vidH = video.videoHeight;
+
+            // Canvas çözünürlüğünü ayarla (render kalitesi için)
+            canvas.width = vidW;
+            canvas.height = vidH;
+
+            // Canvas'ın ekrandaki boyutunu videonun görünen boyutuna eşitle
+            // Bu kısım çok önemli: Video object-fit: contain ile boyutlandığı için
+            // Canvas'ın da aynı boyutlara gelmesi gerekir.
+            const rect = video.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+            }
+
+            timeline.max = video.duration;
+            console.log('Video ve Canvas yeniden boyutlandırıldı. Orijinal:', vidW, 'x', vidH, 'Görünen:', rect.width, 'x', rect.height);
+        }
+
         // Process - Both buttons do the same thing
         const handleTranscribe = async () => {
             if (!videoFile) {
                 alert('Lütfen önce bir video yükleyin!');
                 return;
             }
-            
+
             console.log('Transkript başlatılıyor...', videoFile.name);
-            
+
+            // DÜZELTME: Canvas wrapper'ın görünür olduğundan emin ol
+            const canvasWrapper = document.querySelector('.canvas-wrapper');
+            if (canvasWrapper) {
+                canvasWrapper.style.display = 'flex'; // Flex yapısını koru
+            }
+
+            // DÜZELTME: Video container'ın görünür olduğundan emin ol
+            const videoContainer = document.querySelector('.video-container');
+            if (videoContainer) {
+                videoContainer.style.display = 'flex'; // Flex yapısını koru
+            }
+
+            if (video) {
+                video.style.display = 'block';
+            }
+            if (canvas) {
+                canvas.style.display = 'block';
+            }
+
             // Transkript butonunu devre dışı bırak
             transcribeBtn.disabled = true;
             const originalBtnText = transcribeBtn.innerHTML;
             transcribeBtn.innerHTML = '<div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 28px;">⏳</span><div style="text-align: left; flex: 1;"><div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">İşleniyor...</div><div style="font-size: 12px; opacity: 0.95;">Lütfen bekleyin</div></div></div>';
-            
+
             progress.classList.add('active');
             progressFill.style.width = '20%';
             progressText.textContent = 'Yükleniyor...';
@@ -1547,28 +1667,68 @@ canvas {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 console.log('Backend yanıtı alındı:', response.status);
                 const data = await response.json();
                 console.log('JSON verisi:', data);
 
                 if (data.status === 'success') {
-                    originalSrtContent = data.srt_content;
+                    originalSrtContent = typeof data.srt_content === 'string' ? data.srt_content : String(data.srt_content || '');
                     progressFill.style.width = '70%';
                     progressText.textContent = 'Konuşma dili algılanıyor...';
-                    
-                    // Dil algılama
-                    await detectLanguage(originalSrtContent);
-                    
+
+                    // Backend dili algıladıysa onu kullan, yoksa metin analizi yap
+                    if (data.detected_language) {
+                        console.log('Backend dili ses analizi ile algıladı:', data.detected_language);
+                        detectedLanguage = data.detected_language;
+
+                        // Eğer diller listesi yüklüyse arayüzü güncelle
+                        if (typeof languages !== 'undefined') {
+                            const langInfo = languages.find(l => l.code === detectedLanguage);
+                            if (langInfo) {
+                                const detectedLanguageNameEl = document.getElementById('detectedLanguageName');
+                                if (detectedLanguageNameEl) {
+                                    detectedLanguageNameEl.textContent = `${langInfo.flag} ${langInfo.name} (${langInfo.nativeName})`;
+                                }
+                            }
+                        }
+                    } else {
+                        await detectLanguage(originalSrtContent);
+                    }
+
                     progressFill.style.width = '100%';
                     progressText.textContent = 'Başarılı!';
+
                     setTimeout(() => {
-                        subtitles = parseSRT(originalSrtContent);
-                        showLanguageSection();
-                        progress.classList.remove('active');
-                        transcribeBtn.innerHTML = originalBtnText;
-                        transcribeBtn.disabled = false;
+                        try {
+                            console.log('Altyazı işleme başlatılıyor...');
+                            subtitles = parseSRT(originalSrtContent);
+
+                            showLanguageSection();
+
+                            // İşlem sonrası tekrar görünürlük garantisi
+                            if (canvasWrapper) canvasWrapper.style.display = 'flex';
+                            if (videoContainer) videoContainer.style.display = 'flex';
+                            if (video) video.style.display = 'block';
+                            if (canvas) canvas.style.display = 'block';
+
+                            // Boyutlandırmayı tetikle
+                            resizeVideoContainer();
+                            renderLoop();
+
+                            progress.classList.remove('active');
+                            transcribeBtn.innerHTML = originalBtnText;
+                            transcribeBtn.disabled = false;
+                        } catch (err) {
+                            console.error(err);
+                            alert('Görüntülemede hata: ' + err.message);
+                            progress.classList.remove('active');
+                            transcribeBtn.innerHTML = originalBtnText;
+                            transcribeBtn.disabled = false;
+                        }
                     }, 500);
+                } else {
+                    throw new Error(data.message || 'Altyazı oluşturulamadı');
                 }
             } catch (error) {
                 alert('Hata: ' + error.message);
@@ -1586,12 +1746,15 @@ canvas {
                     body: JSON.stringify({ srt_content: srtContent })
                 });
                 const data = await response.json();
-                
+
                 if (data.status === 'success') {
                     detectedLanguage = data.language;
                     const langInfo = languages.find(l => l.code === detectedLanguage);
                     if (langInfo) {
-                        document.getElementById('detectedLanguageName').textContent = `${langInfo.flag} ${langInfo.name} (${langInfo.nativeName})`;
+                        const detectedLanguageNameEl = document.getElementById('detectedLanguageName');
+                        if (detectedLanguageNameEl) {
+                            detectedLanguageNameEl.textContent = `${langInfo.flag} ${langInfo.name} (${langInfo.nativeName})`;
+                        }
                     }
                 }
             } catch (error) {
@@ -1600,21 +1763,52 @@ canvas {
         }
 
         function showLanguageSection() {
-            document.getElementById('languageDivider').style.display = 'block';
-            document.getElementById('languageSection').style.display = 'block';
+            const languageDivider = document.getElementById('languageDivider');
+            const languageSection = document.getElementById('languageSection');
+            if (languageDivider) languageDivider.style.display = 'block';
+            if (languageSection) languageSection.style.display = 'block';
         }
 
-        // Dil seçici modal işlevleri
-        const languageModal = document.getElementById('languageModal');
-        const languageSelectorBtn = document.getElementById('languageSelectorBtn');
-        const closeLanguageModal = document.getElementById('closeLanguageModal');
-        const languageSearchInput = document.getElementById('languageSearchInput');
-        const languageList = document.getElementById('languageList');
-        const translateBtn = document.getElementById('translateBtn');
+        // Dil seçici modal işlevleri - DOM yüklendikten sonra çalıştır
+        function initLanguageModal() {
+            const languageModal = document.getElementById('languageModal');
+            const languageSelectorBtn = document.getElementById('languageSelectorBtn');
+            const closeLanguageModal = document.getElementById('closeLanguageModal');
+            const languageSearchInput = document.getElementById('languageSearchInput');
+            const languageList = document.getElementById('languageList');
+            const translateBtn = document.getElementById('translateBtn');
 
-        // Dil listesini oluştur
+            // Null kontrolü - elementler yoksa event listener ekleme
+            if (!languageModal || !languageSelectorBtn || !closeLanguageModal || !languageSearchInput || !languageList || !translateBtn) {
+                // Uyarı kaldırıldı - bu normal, modal HTML sayfanın altında
+                return false;
+            }
+
+            return { languageModal, languageSelectorBtn, closeLanguageModal, languageSearchInput, languageList, translateBtn };
+        }
+
+        // Modal elementlerini başlat - DOM yüklendikten sonra
+        function initializeLanguageModal() {
+            const modalElements = initLanguageModal();
+            if (modalElements) {
+                setupLanguageModal(modalElements);
+            }
+        }
+
+        // DOM yüklendikten sonra modal'ı başlat
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeLanguageModal);
+        } else {
+            // DOM zaten yüklü
+            initializeLanguageModal();
+        }
+
+        // Dil listesini oluştur (global fonksiyon)
         function renderLanguages(filterText = '') {
-            const filtered = languages.filter(lang => 
+            const languageList = document.getElementById('languageList');
+            if (!languageList) return;
+
+            const filtered = languages.filter(lang =>
                 lang.name.toLowerCase().includes(filterText.toLowerCase()) ||
                 lang.nativeName.toLowerCase().includes(filterText.toLowerCase()) ||
                 lang.code.toLowerCase().includes(filterText.toLowerCase())
@@ -1645,88 +1839,110 @@ canvas {
             if (!lang) return;
 
             selectedTargetLanguage = lang;
-            
+
             // UI'ı güncelle
-            document.getElementById('selectedLangFlag').textContent = lang.flag;
-            document.getElementById('selectedLangName').textContent = lang.name;
-            
+            const selectedLangFlag = document.getElementById('selectedLangFlag');
+            const selectedLangName = document.getElementById('selectedLangName');
+            if (selectedLangFlag) selectedLangFlag.textContent = lang.flag;
+            if (selectedLangName) selectedLangName.textContent = lang.name;
+
             // Translate butonunu göster
-            translateBtn.style.display = 'block';
-            
+            const translateBtn = document.getElementById('translateBtn');
+            if (translateBtn) translateBtn.style.display = 'block';
+
             // Modal'ı kapat
-            languageModal.classList.remove('active');
-            
+            const languageModal = document.getElementById('languageModal');
+            if (languageModal) languageModal.classList.remove('active');
+
             // Arama inputunu temizle
-            languageSearchInput.value = '';
+            const languageSearchInput = document.getElementById('languageSearchInput');
+            if (languageSearchInput) languageSearchInput.value = '';
         }
 
-        // Modal açma/kapama
-        languageSelectorBtn.addEventListener('click', () => {
-            languageModal.classList.add('active');
-            renderLanguages();
-            setTimeout(() => languageSearchInput.focus(), 100);
-        });
+        function setupLanguageModal({ languageModal, languageSelectorBtn, closeLanguageModal, languageSearchInput, languageList, translateBtn }) {
 
-        closeLanguageModal.addEventListener('click', () => {
-            languageModal.classList.remove('active');
-        });
-
-        languageModal.addEventListener('click', (e) => {
-            if (e.target === languageModal) {
-                languageModal.classList.remove('active');
-            }
-        });
-
-        // Arama
-        languageSearchInput.addEventListener('input', (e) => {
-            renderLanguages(e.target.value);
-        });
-
-        // Çeviri işlemi
-        translateBtn.addEventListener('click', async () => {
-            if (!selectedTargetLanguage || !originalSrtContent) {
-                alert('Lütfen önce bir dil seçin!');
-                return;
-            }
-
-            const originalText = translateBtn.innerHTML;
-            translateBtn.disabled = true;
-            translateBtn.innerHTML = '<div style="display: flex; align-items: center; gap: 12px; justify-content: center;"><span style="font-size: 24px;">⏳</span><div style="font-weight: 700; font-size: 15px;">Çevriliyor...</div></div>';
-
-            try {
-                const response = await fetch('http://localhost:8002/translate-srt/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        srt_content: originalSrtContent,
-                        target_language: selectedTargetLanguage.name
-                    })
+            // Modal açma/kapama
+            if (languageSelectorBtn && languageModal && languageSearchInput) {
+                languageSelectorBtn.addEventListener('click', () => {
+                    languageModal.classList.add('active');
+                    renderLanguages();
+                    setTimeout(() => languageSearchInput.focus(), 100);
                 });
+            }
 
-                const data = await response.json();
+            if (closeLanguageModal && languageModal) {
+                closeLanguageModal.addEventListener('click', () => {
+                    languageModal.classList.remove('active');
+                });
+            }
 
-                if (data.status === 'success') {
-                    // Çevrilmiş altyazıları yükle
-                    subtitles = parseSRT(data.translated_srt);
-                    
-                    translateBtn.innerHTML = '<div style="display: flex; align-items: center; gap: 12px; justify-content: center;"><span style="font-size: 24px;">✅</span><div style="font-weight: 700; font-size: 15px;">Tamamlandı!</div></div>';
-                    
-                    setTimeout(() => {
+            if (languageModal) {
+                languageModal.addEventListener('click', (e) => {
+                    if (e.target === languageModal) {
+                        languageModal.classList.remove('active');
+                    }
+                });
+            }
+
+            // Arama
+            if (languageSearchInput) {
+                languageSearchInput.addEventListener('input', (e) => {
+                    renderLanguages(e.target.value);
+                });
+            }
+
+            // Çeviri işlemi
+            if (translateBtn) {
+                translateBtn.addEventListener('click', async () => {
+                    if (!selectedTargetLanguage || !originalSrtContent) {
+                        alert('Lütfen önce bir dil seçin!');
+                        return;
+                    }
+
+                    const originalText = translateBtn.innerHTML;
+                    translateBtn.disabled = true;
+                    translateBtn.innerHTML = '<div style="display: flex; align-items: center; gap: 12px; justify-content: center;"><span style="font-size: 24px;">⏳</span><div style="font-weight: 700; font-size: 15px;">Çevriliyor...</div></div>';
+
+                    try {
+                        const response = await fetch('http://localhost:8002/translate-srt/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                srt_content: originalSrtContent,
+                                target_language: selectedTargetLanguage.name
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            // Çevrilmiş altyazıları yükle
+                            subtitles = parseSRT(data.translated_srt);
+
+                            translateBtn.innerHTML = '<div style="display: flex; align-items: center; gap: 12px; justify-content: center;"><span style="font-size: 24px;">✅</span><div style="font-weight: 700; font-size: 15px;">Tamamlandı!</div></div>';
+
+                            setTimeout(() => {
+                                translateBtn.innerHTML = originalText;
+                                translateBtn.disabled = false;
+                            }, 2000);
+                        } else {
+                            throw new Error(data.message || 'Çeviri başarısız');
+                        }
+                    } catch (error) {
+                        alert('Çeviri hatası: ' + error.message);
                         translateBtn.innerHTML = originalText;
                         translateBtn.disabled = false;
-                    }, 2000);
-                } else {
-                    throw new Error(data.message || 'Çeviri başarısız');
-                }
-            } catch (error) {
-                alert('Çeviri hatası: ' + error.message);
-                translateBtn.innerHTML = originalText;
-                translateBtn.disabled = false;
+                    }
+                });
             }
-        });
+        }
 
-        processBtn.addEventListener('click', handleTranscribe);
-        transcribeBtn.addEventListener('click', handleTranscribe);
+        if (processBtn) {
+            processBtn.addEventListener('click', handleTranscribe);
+        }
+        if (transcribeBtn) {
+            transcribeBtn.addEventListener('click', handleTranscribe);
+        }
 
         function parseSRT(srt) {
             return srt.trim().split(/\n\s*\n/).map(block => {
@@ -1754,43 +1970,53 @@ canvas {
 
         // DÜZELTME: Görsel için global Image objesi (performans için)
         let imageElement = null;
+        let isRenderLoopRunning = false;
 
         function renderLoop() {
-            drawFrame();
-            requestAnimationFrame(renderLoop);
+            if (isRenderLoopRunning) return; // Zaten çalışıyorsa tekrar başlatma
+            isRenderLoopRunning = true;
+
+            function loop() {
+                drawFrame();
+                requestAnimationFrame(loop);
+            }
+            loop();
         }
 
         function drawFrame() {
-            if (!canvas.width) return;
+            if (!canvas.width || !video) return;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Önce görseli çiz (alt katman)
+
+            // DÜZELTME: Videoyu canvas'a çizme, video elementi zaten altta görünüyor.
+            // Canvas sadece altyazı ve görseller için overlay (katman) olmalı.
+
+            // Sonra görseli çiz (orta katman)
             drawImage();
-            // Sonra altyazıları çiz (üst katman)
+            // Son olarak altyazıları çiz (üst katman)
             drawSubtitles();
         }
 
         function drawImage() {
             if (!processedImage || !imageElement) return;
-            
+
             // Görsel yüklenmemişse çizme
             if (!imageElement.complete || imageElement.naturalWidth === 0) return;
-            
+
             // Görsel boyutu hesapla
             const imgWidth = canvas.width * (imageSettings.size / 100);
             const aspectRatio = imageElement.naturalHeight / imageElement.naturalWidth;
             const imgHeight = imgWidth * aspectRatio;
-            
+
             // Konum hesapla
             const x = (canvas.width * imageSettings.x / 100) - (imgWidth / 2);
             const y = (canvas.height * imageSettings.y / 100) - (imgHeight / 2);
-            
+
             // Opaklık ayarla
             ctx.globalAlpha = imageSettings.opacity / 100;
-            
+
             // Görseli çiz
             ctx.drawImage(imageElement, x, y, imgWidth, imgHeight);
-            
+
             // Opaklığı sıfırla
             ctx.globalAlpha = 1;
         }
@@ -1807,7 +2033,7 @@ canvas {
             ctx.textBaseline = 'middle';
 
             const totalWidth = ctx.measureText(currentSub.text).width;
-            
+
             // DÜZELTME: Hizalamaya göre X koordinatını ayarla
             let startX;
             if (settings.textAlign === 'left') {
@@ -1817,7 +2043,7 @@ canvas {
             } else {
                 startX = canvas.width / 2; // Orta
             }
-            
+
             // Shadow
             if (settings.shadowBlur > 0) {
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
@@ -1877,63 +2103,99 @@ canvas {
         }
 
         // Controls
-        playBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                video.pause();
-                playBtn.textContent = '▶️';
-            } else {
-                video.play();
-                playBtn.textContent = '⏸️';
-            }
-            isPlaying = !isPlaying;
-        });
+        if (playBtn) {
+            playBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    video.pause();
+                    playBtn.textContent = '▶️';
+                } else {
+                    video.play();
+                    playBtn.textContent = '⏸️';
+                }
+                isPlaying = !isPlaying;
+            });
+        }
 
-        timeline.addEventListener('input', () => {
-            video.currentTime = parseFloat(timeline.value);
-        });
+        if (timeline) {
+            timeline.addEventListener('input', () => {
+                video.currentTime = parseFloat(timeline.value);
+            });
+        }
 
-        document.getElementById('fontSize').addEventListener('input', (e) => {
-            settings.fontSize = parseInt(e.target.value);
-            document.getElementById('fontSizeVal').textContent = e.target.value + 'px';
-        });
+        const fontSizeEl = document.getElementById('fontSize');
+        if (fontSizeEl) {
+            fontSizeEl.addEventListener('input', (e) => {
+                settings.fontSize = parseInt(e.target.value);
+                const fontSizeVal = document.getElementById('fontSizeVal');
+                if (fontSizeVal) fontSizeVal.textContent = e.target.value + 'px';
+            });
+        }
 
-        document.getElementById('vPos').addEventListener('input', (e) => {
-            settings.verticalPos = parseInt(e.target.value);
-            document.getElementById('vPosVal').textContent = e.target.value + '%';
-        });
+        const vPosEl = document.getElementById('vPos');
+        if (vPosEl) {
+            vPosEl.addEventListener('input', (e) => {
+                settings.verticalPos = parseInt(e.target.value);
+                const vPosVal = document.getElementById('vPosVal');
+                if (vPosVal) vPosVal.textContent = e.target.value + '%';
+            });
+        }
 
-        document.getElementById('strokeWidth').addEventListener('input', (e) => {
-            settings.strokeWidth = parseInt(e.target.value);
-            document.getElementById('strokeWidthVal').textContent = e.target.value + 'px';
-        });
+        const strokeWidthEl = document.getElementById('strokeWidth');
+        if (strokeWidthEl) {
+            strokeWidthEl.addEventListener('input', (e) => {
+                settings.strokeWidth = parseInt(e.target.value);
+                const strokeWidthVal = document.getElementById('strokeWidthVal');
+                if (strokeWidthVal) strokeWidthVal.textContent = e.target.value + 'px';
+            });
+        }
 
-        document.getElementById('bgOpacity').addEventListener('input', (e) => {
-            settings.bgOpacity = parseInt(e.target.value);
-            document.getElementById('bgOpacityVal').textContent = e.target.value + '%';
-        });
+        const bgOpacityEl = document.getElementById('bgOpacity');
+        if (bgOpacityEl) {
+            bgOpacityEl.addEventListener('input', (e) => {
+                settings.bgOpacity = parseInt(e.target.value);
+                const bgOpacityVal = document.getElementById('bgOpacityVal');
+                if (bgOpacityVal) bgOpacityVal.textContent = e.target.value + '%';
+            });
+        }
 
-        document.getElementById('textColor').addEventListener('input', (e) => {
-            settings.textColor = e.target.value;
-        });
+        const textColorEl = document.getElementById('textColor');
+        if (textColorEl) {
+            textColorEl.addEventListener('input', (e) => {
+                settings.textColor = e.target.value;
+            });
+        }
 
-        document.getElementById('highlightColor').addEventListener('input', (e) => {
-            settings.highlightColor = e.target.value;
-        });
+        const highlightColorEl = document.getElementById('highlightColor');
+        if (highlightColorEl) {
+            highlightColorEl.addEventListener('input', (e) => {
+                settings.highlightColor = e.target.value;
+            });
+        }
 
-        document.getElementById('fontFamily').addEventListener('change', (e) => {
-            settings.fontFamily = e.target.value;
-        });
+        const fontFamilyEl = document.getElementById('fontFamily');
+        if (fontFamilyEl) {
+            fontFamilyEl.addEventListener('change', (e) => {
+                settings.fontFamily = e.target.value;
+            });
+        }
 
         // Font weight buttons are handled above
 
-        document.getElementById('strokeColor').addEventListener('input', (e) => {
-            settings.strokeColor = e.target.value;
-        });
+        const strokeColorEl = document.getElementById('strokeColor');
+        if (strokeColorEl) {
+            strokeColorEl.addEventListener('input', (e) => {
+                settings.strokeColor = e.target.value;
+            });
+        }
 
-        document.getElementById('shadowBlur').addEventListener('input', (e) => {
-            settings.shadowBlur = parseInt(e.target.value);
-            document.getElementById('shadowBlurVal').textContent = e.target.value + 'px';
-        });
+        const shadowBlurEl = document.getElementById('shadowBlur');
+        if (shadowBlurEl) {
+            shadowBlurEl.addEventListener('input', (e) => {
+                settings.shadowBlur = parseInt(e.target.value);
+                const shadowBlurVal = document.getElementById('shadowBlurVal');
+                if (shadowBlurVal) shadowBlurVal.textContent = e.target.value + 'px';
+            });
+        }
 
         // Color presets
         document.querySelectorAll('.color-preset').forEach(btn => {
@@ -2000,24 +2262,24 @@ canvas {
                 const presetName = btn.getAttribute('data-preset');
                 const preset = presets[presetName];
                 if (!preset) return;
-                
+
                 Object.assign(settings, preset);
                 document.getElementById('fontSize').value = preset.fontSize;
                 document.getElementById('fontSizeVal').textContent = preset.fontSize + 'px';
                 document.getElementById('textColor').value = preset.textColor;
                 document.getElementById('highlightColor').value = preset.highlightColor;
                 document.getElementById('fontFamily').value = preset.fontFamily;
-                
+
                 // Update font weight buttons
                 document.querySelectorAll('.font-weight-btn').forEach(b => b.classList.remove('active'));
                 const activeWeightBtn = document.querySelector(`.font-weight-btn[data-weight="${preset.fontWeight}"]`);
                 if (activeWeightBtn) activeWeightBtn.classList.add('active');
-                
+
                 // Update alignment buttons
                 document.querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
                 const activeAlignBtn = document.querySelector(`.align-btn[data-align="${preset.textAlign}"]`);
                 if (activeAlignBtn) activeAlignBtn.classList.add('active');
-                
+
                 document.getElementById('strokeWidth').value = preset.strokeWidth;
                 document.getElementById('strokeWidthVal').textContent = preset.strokeWidth + 'px';
                 document.getElementById('strokeColor').value = preset.strokeColor;
@@ -2043,35 +2305,41 @@ canvas {
         const removeImageBtn = document.getElementById('removeImageBtn');
 
         // Görsel yükleme alanına tıklama
-        imageDropArea.addEventListener('click', () => imageInput.click());
+        if (imageDropArea && imageInput) {
+            imageDropArea.addEventListener('click', () => imageInput.click());
+        }
 
         // Drag & Drop
-        imageDropArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            imageDropArea.style.borderColor = 'var(--primary)';
-            imageDropArea.style.background = 'rgba(99, 102, 241, 0.05)';
-        });
+        if (imageDropArea) {
+            imageDropArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                imageDropArea.style.borderColor = 'var(--primary)';
+                imageDropArea.style.background = 'rgba(99, 102, 241, 0.05)';
+            });
 
-        imageDropArea.addEventListener('dragleave', () => {
-            imageDropArea.style.borderColor = 'var(--border)';
-            imageDropArea.style.background = 'var(--bg-light)';
-        });
+            imageDropArea.addEventListener('dragleave', () => {
+                imageDropArea.style.borderColor = 'var(--border)';
+                imageDropArea.style.background = 'var(--bg-light)';
+            });
 
-        imageDropArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            imageDropArea.style.borderColor = 'var(--border)';
-            imageDropArea.style.background = 'var(--bg-light)';
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                handleImageUpload(file);
-            }
-        });
+            imageDropArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                imageDropArea.style.borderColor = 'var(--border)';
+                imageDropArea.style.background = 'var(--bg-light)';
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    handleImageUpload(file);
+                }
+            });
+        }
 
         // Dosya seçme
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) handleImageUpload(file);
-        });
+        if (imageInput) {
+            imageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) handleImageUpload(file);
+            });
+        }
 
         function handleImageUpload(file) {
             uploadedImage = file;
@@ -2083,216 +2351,238 @@ canvas {
                     console.log('Görsel yüklendi:', imageElement.naturalWidth, 'x', imageElement.naturalHeight);
                 };
                 imageElement.src = e.target.result;
-                
-                imagePreview.src = e.target.result;
+
+                if (imagePreview) imagePreview.src = e.target.result;
                 processedImage = e.target.result;
-                imagePreviewSection.style.display = 'block';
-                removeBackgroundSection.style.display = 'block';
-                imageControlsSection.style.display = 'block';
-                imageDivider.style.display = 'block';
-                imageControlsDivider.style.display = 'block';
+                if (imagePreviewSection) imagePreviewSection.style.display = 'block';
+                if (removeBackgroundSection) removeBackgroundSection.style.display = 'block';
+                if (imageControlsSection) imageControlsSection.style.display = 'block';
+                if (imageDivider) imageDivider.style.display = 'block';
+                if (imageControlsDivider) imageControlsDivider.style.display = 'block';
             };
             reader.readAsDataURL(file);
         }
 
         // Arka planı kaldır
-        removeBgBtn.addEventListener('click', async () => {
-            if (!uploadedImage) return;
-            
-            const originalText = removeBgBtn.innerHTML;
-            removeBgBtn.disabled = true;
-            removeBgBtn.innerHTML = '<div style="display: flex; align-items: center; gap: 12px; justify-content: center;"><span style="font-size: 28px;">⏳</span><div style="font-weight: 700; font-size: 15px;">İşleniyor...</div></div>';
-            
-            try {
-                const formData = new FormData();
-                formData.append('file', uploadedImage);
-                
-                const response = await fetch('http://localhost:8002/remove-background/', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = URL.createObjectURL(blob);
-                    
-                    // DÜZELTME: Global Image objesini güncelle
-                    imageElement = new Image();
-                    imageElement.onload = () => {
-                        console.log('Arka plansız görsel yüklendi');
-                    };
-                    imageElement.src = url;
-                    
-                    imagePreview.src = url;
-                    processedImage = url;
-                    removeBgBtn.innerHTML = '<div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 28px;">✅</span><div style="text-align: left; flex: 1;"><div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Tamamlandı!</div><div style="font-size: 12px; opacity: 0.95;">Arka plan kaldırıldı</div></div></div>';
-                    setTimeout(() => {
-                        removeBgBtn.innerHTML = originalText;
-                        removeBgBtn.disabled = false;
-                    }, 2000);
-                } else {
-                    throw new Error('Arka plan kaldırma başarısız');
+        if (removeBgBtn) {
+            removeBgBtn.addEventListener('click', async () => {
+                if (!uploadedImage) return;
+
+                const originalText = removeBgBtn.innerHTML;
+                removeBgBtn.disabled = true;
+                removeBgBtn.innerHTML = '<div style="display: flex; align-items: center; gap: 12px; justify-content: center;"><span style="font-size: 28px;">⏳</span><div style="font-weight: 700; font-size: 15px;">İşleniyor...</div></div>';
+
+                try {
+                    const formData = new FormData();
+                    formData.append('file', uploadedImage);
+
+                    const response = await fetch('http://localhost:8002/remove-background/', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        const url = URL.createObjectURL(blob);
+
+                        // DÜZELTME: Global Image objesini güncelle
+                        imageElement = new Image();
+                        imageElement.onload = () => {
+                            console.log('Arka plansız görsel yüklendi');
+                        };
+                        imageElement.src = url;
+
+                        if (imagePreview) imagePreview.src = url;
+                        processedImage = url;
+                        removeBgBtn.innerHTML = '<div style="display: flex; align-items: center; gap: 12px;"><span style="font-size: 28px;">✅</span><div style="text-align: left; flex: 1;"><div style="font-weight: 700; font-size: 15px; margin-bottom: 4px;">Tamamlandı!</div><div style="font-size: 12px; opacity: 0.95;">Arka plan kaldırıldı</div></div></div>';
+                        setTimeout(() => {
+                            removeBgBtn.innerHTML = originalText;
+                            removeBgBtn.disabled = false;
+                        }, 2000);
+                    } else {
+                        throw new Error('Arka plan kaldırma başarısız');
+                    }
+                } catch (error) {
+                    alert('Hata: ' + error.message);
+                    removeBgBtn.innerHTML = originalText;
+                    removeBgBtn.disabled = false;
                 }
-            } catch (error) {
-                alert('Hata: ' + error.message);
-                removeBgBtn.innerHTML = originalText;
-                removeBgBtn.disabled = false;
-            }
-        });
+            });
+        }
 
         // Görseli kaldır
-        removeImageBtn.addEventListener('click', () => {
-            uploadedImage = null;
-            processedImage = null;
-            imageElement = null; // DÜZELTME: Image objesini de temizle
-            imagePreview.src = '';
-            imagePreviewSection.style.display = 'none';
-            removeBackgroundSection.style.display = 'none';
-            imageControlsSection.style.display = 'none';
-            imageDivider.style.display = 'none';
-            imageControlsDivider.style.display = 'none';
-            imageInput.value = '';
-        });
+        if (removeImageBtn) {
+            removeImageBtn.addEventListener('click', () => {
+                uploadedImage = null;
+                processedImage = null;
+                imageElement = null; // DÜZELTME: Image objesini de temizle
+                if (imagePreview) imagePreview.src = '';
+                if (imagePreviewSection) imagePreviewSection.style.display = 'none';
+                if (removeBackgroundSection) removeBackgroundSection.style.display = 'none';
+                if (imageControlsSection) imageControlsSection.style.display = 'none';
+                if (imageDivider) imageDivider.style.display = 'none';
+                if (imageControlsDivider) imageControlsDivider.style.display = 'none';
+                if (imageInput) imageInput.value = '';
+            });
+        }
 
         // Görsel ayarları
-        document.getElementById('imageSize').addEventListener('input', (e) => {
-            imageSettings.size = parseInt(e.target.value);
-            document.getElementById('imageSizeVal').textContent = e.target.value;
-        });
+        const imageSizeEl = document.getElementById('imageSize');
+        if (imageSizeEl) {
+            imageSizeEl.addEventListener('input', (e) => {
+                imageSettings.size = parseInt(e.target.value);
+                const imageSizeVal = document.getElementById('imageSizeVal');
+                if (imageSizeVal) imageSizeVal.textContent = e.target.value;
+            });
+        }
 
-        document.getElementById('imageX').addEventListener('input', (e) => {
-            imageSettings.x = parseInt(e.target.value);
-            document.getElementById('imageXVal').textContent = e.target.value;
-        });
+        const imageXEl = document.getElementById('imageX');
+        if (imageXEl) {
+            imageXEl.addEventListener('input', (e) => {
+                imageSettings.x = parseInt(e.target.value);
+                const imageXVal = document.getElementById('imageXVal');
+                if (imageXVal) imageXVal.textContent = e.target.value;
+            });
+        }
 
-        document.getElementById('imageY').addEventListener('input', (e) => {
-            imageSettings.y = parseInt(e.target.value);
-            document.getElementById('imageYVal').textContent = e.target.value;
-        });
+        const imageYEl = document.getElementById('imageY');
+        if (imageYEl) {
+            imageYEl.addEventListener('input', (e) => {
+                imageSettings.y = parseInt(e.target.value);
+                const imageYVal = document.getElementById('imageYVal');
+                if (imageYVal) imageYVal.textContent = e.target.value;
+            });
+        }
 
-        document.getElementById('imageOpacity').addEventListener('input', (e) => {
-            imageSettings.opacity = parseInt(e.target.value);
-            document.getElementById('imageOpacityVal').textContent = e.target.value;
-        });
+        const imageOpacityEl = document.getElementById('imageOpacity');
+        if (imageOpacityEl) {
+            imageOpacityEl.addEventListener('input', (e) => {
+                imageSettings.opacity = parseInt(e.target.value);
+                const imageOpacityVal = document.getElementById('imageOpacityVal');
+                if (imageOpacityVal) imageOpacityVal.textContent = e.target.value;
+            });
+        }
 
         // Export
-        exportBtn.addEventListener('click', async () => {
-            exportBtn.disabled = true;
-            exportBtn.textContent = '⏳ Processing...';
+        if (exportBtn) {
+            exportBtn.addEventListener('click', async () => {
+                exportBtn.disabled = true;
+                exportBtn.textContent = '⏳ Processing...';
 
-            try {
-                video.pause();
-                video.currentTime = 0;
-                await new Promise(r => setTimeout(r, 500));
+                try {
+                    video.pause();
+                    video.currentTime = 0;
+                    await new Promise(r => setTimeout(r, 500));
 
-                const recordCanvas = document.createElement('canvas');
-                recordCanvas.width = video.videoWidth;
-                recordCanvas.height = video.videoHeight;
-                const recordCtx = recordCanvas.getContext('2d');
-                const stream = recordCanvas.captureStream(30);
+                    const recordCanvas = document.createElement('canvas');
+                    recordCanvas.width = video.videoWidth;
+                    recordCanvas.height = video.videoHeight;
+                    const recordCtx = recordCanvas.getContext('2d');
+                    const stream = recordCanvas.captureStream(30);
 
-                const audioCtx = new AudioContext();
-                const source = audioCtx.createMediaElementSource(video);
-                const dest = audioCtx.createMediaStreamDestination();
-                source.connect(dest);
-                source.connect(audioCtx.destination);
-                if (dest.stream.getAudioTracks().length > 0) {
-                    stream.addTrack(dest.stream.getAudioTracks()[0]);
-                }
-
-                const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9', videoBitsPerSecond: 8000000 });
-                const chunks = [];
-                recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
-                recorder.onstop = () => {
-                    const blob = new Blob(chunks, { type: 'video/webm' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `subtitled_${videoFile.name.replace(/\.[^/.]+$/, '')}.webm`;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
-                    exportBtn.disabled = false;
-                    exportBtn.textContent = '💾 Download Video';
-                };
-
-                function drawFrame() {
-                    recordCtx.drawImage(video, 0, 0, recordCanvas.width, recordCanvas.height);
-                    
-                    // DÜZELTME: Görseli de çiz
-                    if (processedImage && imageElement && imageElement.complete) {
-                        const imgWidth = recordCanvas.width * (imageSettings.size / 100);
-                        const aspectRatio = imageElement.naturalHeight / imageElement.naturalWidth;
-                        const imgHeight = imgWidth * aspectRatio;
-                        const x = (recordCanvas.width * imageSettings.x / 100) - (imgWidth / 2);
-                        const y = (recordCanvas.height * imageSettings.y / 100) - (imgHeight / 2);
-                        recordCtx.globalAlpha = imageSettings.opacity / 100;
-                        recordCtx.drawImage(imageElement, x, y, imgWidth, imgHeight);
-                        recordCtx.globalAlpha = 1;
+                    const audioCtx = new AudioContext();
+                    const source = audioCtx.createMediaElementSource(video);
+                    const dest = audioCtx.createMediaStreamDestination();
+                    source.connect(dest);
+                    source.connect(audioCtx.destination);
+                    if (dest.stream.getAudioTracks().length > 0) {
+                        stream.addTrack(dest.stream.getAudioTracks()[0]);
                     }
-                    
-                    const currentTime = video.currentTime;
-                    const currentSub = subtitles.find(s => currentTime >= s.start && currentTime <= s.end);
-                    if (currentSub) {
-                        const y = recordCanvas.height * settings.verticalPos / 100;
-                        recordCtx.font = `${settings.fontWeight} ${settings.fontSize}px ${settings.fontFamily}`;
-                        recordCtx.textAlign = settings.textAlign;
-                        recordCtx.textBaseline = 'middle';
-                        const totalWidth = recordCtx.measureText(currentSub.text).width;
-                        
-                        // Hizalamaya göre X koordinatı
-                        let startX;
-                        if (settings.textAlign === 'left') {
-                            startX = 40;
-                        } else if (settings.textAlign === 'right') {
-                            startX = recordCanvas.width - 40;
-                        } else {
-                            startX = recordCanvas.width / 2;
+
+                    const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9', videoBitsPerSecond: 8000000 });
+                    const chunks = [];
+                    recorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+                    recorder.onstop = () => {
+                        const blob = new Blob(chunks, { type: 'video/webm' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `subtitled_${videoFile.name.replace(/\.[^/.]+$/, '')}.webm`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        exportBtn.disabled = false;
+                        exportBtn.textContent = '💾 Download Video';
+                    };
+
+                    function drawFrame() {
+                        recordCtx.drawImage(video, 0, 0, recordCanvas.width, recordCanvas.height);
+
+                        // DÜZELTME: Görseli de çiz
+                        if (processedImage && imageElement && imageElement.complete) {
+                            const imgWidth = recordCanvas.width * (imageSettings.size / 100);
+                            const aspectRatio = imageElement.naturalHeight / imageElement.naturalWidth;
+                            const imgHeight = imgWidth * aspectRatio;
+                            const x = (recordCanvas.width * imageSettings.x / 100) - (imgWidth / 2);
+                            const y = (recordCanvas.height * imageSettings.y / 100) - (imgHeight / 2);
+                            recordCtx.globalAlpha = imageSettings.opacity / 100;
+                            recordCtx.drawImage(imageElement, x, y, imgWidth, imgHeight);
+                            recordCtx.globalAlpha = 1;
                         }
-                        
-                        if (settings.textAlign === 'center') {
-                            recordCtx.fillStyle = `rgba(0, 0, 0, ${settings.bgOpacity / 100})`;
-                            recordCtx.fillRect(recordCanvas.width / 2 - totalWidth / 2 - 20, y - settings.fontSize / 2 - 10, totalWidth + 40, settings.fontSize + 20);
-                            let x = recordCanvas.width / 2 - totalWidth / 2;
-                            currentSub.words.forEach(word => {
-                                const isActive = currentTime >= word.start && currentTime <= word.end;
-                                const wordWidth = recordCtx.measureText(word.text).width;
-                                const wordX = x + wordWidth / 2;
+
+                        const currentTime = video.currentTime;
+                        const currentSub = subtitles.find(s => currentTime >= s.start && currentTime <= s.end);
+                        if (currentSub) {
+                            const y = recordCanvas.height * settings.verticalPos / 100;
+                            recordCtx.font = `${settings.fontWeight} ${settings.fontSize}px ${settings.fontFamily}`;
+                            recordCtx.textAlign = settings.textAlign;
+                            recordCtx.textBaseline = 'middle';
+                            const totalWidth = recordCtx.measureText(currentSub.text).width;
+
+                            // Hizalamaya göre X koordinatı
+                            let startX;
+                            if (settings.textAlign === 'left') {
+                                startX = 40;
+                            } else if (settings.textAlign === 'right') {
+                                startX = recordCanvas.width - 40;
+                            } else {
+                                startX = recordCanvas.width / 2;
+                            }
+
+                            if (settings.textAlign === 'center') {
+                                recordCtx.fillStyle = `rgba(0, 0, 0, ${settings.bgOpacity / 100})`;
+                                recordCtx.fillRect(recordCanvas.width / 2 - totalWidth / 2 - 20, y - settings.fontSize / 2 - 10, totalWidth + 40, settings.fontSize + 20);
+                                let x = recordCanvas.width / 2 - totalWidth / 2;
+                                currentSub.words.forEach(word => {
+                                    const isActive = currentTime >= word.start && currentTime <= word.end;
+                                    const wordWidth = recordCtx.measureText(word.text).width;
+                                    const wordX = x + wordWidth / 2;
+                                    if (settings.strokeWidth > 0) {
+                                        recordCtx.strokeStyle = settings.strokeColor;
+                                        recordCtx.lineWidth = settings.strokeWidth;
+                                        recordCtx.lineJoin = 'round';
+                                        recordCtx.strokeText(word.text, wordX, y);
+                                    }
+                                    recordCtx.fillStyle = isActive ? settings.highlightColor : settings.textColor;
+                                    recordCtx.fillText(word.text, wordX, y);
+                                    x += recordCtx.measureText(word.text + ' ').width;
+                                });
+                            } else {
                                 if (settings.strokeWidth > 0) {
                                     recordCtx.strokeStyle = settings.strokeColor;
                                     recordCtx.lineWidth = settings.strokeWidth;
                                     recordCtx.lineJoin = 'round';
-                                    recordCtx.strokeText(word.text, wordX, y);
+                                    recordCtx.strokeText(currentSub.text, startX, y);
                                 }
-                                recordCtx.fillStyle = isActive ? settings.highlightColor : settings.textColor;
-                                recordCtx.fillText(word.text, wordX, y);
-                                x += recordCtx.measureText(word.text + ' ').width;
-                            });
-                        } else {
-                            if (settings.strokeWidth > 0) {
-                                recordCtx.strokeStyle = settings.strokeColor;
-                                recordCtx.lineWidth = settings.strokeWidth;
-                                recordCtx.lineJoin = 'round';
-                                recordCtx.strokeText(currentSub.text, startX, y);
+                                recordCtx.fillStyle = settings.textColor;
+                                recordCtx.fillText(currentSub.text, startX, y);
                             }
-                            recordCtx.fillStyle = settings.textColor;
-                            recordCtx.fillText(currentSub.text, startX, y);
                         }
+                        if (!video.ended) requestAnimationFrame(drawFrame);
                     }
-                    if (!video.ended) requestAnimationFrame(drawFrame);
-                }
 
-                recorder.start();
-                video.play();
-                drawFrame();
-                video.onended = () => setTimeout(() => recorder.stop(), 500);
-            } catch (error) {
-                alert('Export error: ' + error.message);
-                exportBtn.disabled = false;
-                exportBtn.textContent = '💾 Download Video';
-            }
-        });
+                    recorder.start();
+                    video.play();
+                    drawFrame();
+                    video.onended = () => setTimeout(() => recorder.stop(), 500);
+                } catch (error) {
+                    alert('Export error: ' + error.message);
+                    exportBtn.disabled = false;
+                    exportBtn.textContent = '💾 Download Video';
+                }
+            });
+        }
     </script>
 
     <!-- Dil Seçici Modal -->
@@ -2311,5 +2601,5 @@ canvas {
         </div>
     </div>
 </body>
+
 </html>
-        

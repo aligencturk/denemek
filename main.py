@@ -1,5 +1,6 @@
 import os
 import shutil
+import logging
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -12,9 +13,43 @@ import numpy as np
 import cv2
 from dotenv import load_dotenv
 
+# Logging yapılandırması
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("app.log", encoding='utf-8')
+    ]
+)
+logger = logging.getLogger(__name__)
+
 load_dotenv()
 
 app = FastAPI()
+
+# Helper: Saniye cinsinden süreyi SRT formatına (HH:MM:SS,mmm) çevirir
+def format_timestamp(seconds: float) -> str:
+    milliseconds = int((seconds % 1) * 1000)
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    seconds = int(seconds % 60)
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d},{milliseconds:03d}"
+
+# Helper: Whisper segmentlerini SRT formatına çevirir
+def segments_to_srt(segments):
+    srt_content = ""
+    for i, segment in enumerate(segments, start=1):
+        # Segment bir obje ise attribute, dict ise key olarak eriş
+        start_time = getattr(segment, 'start', segment['start'] if isinstance(segment, dict) else 0)
+        end_time = getattr(segment, 'end', segment['end'] if isinstance(segment, dict) else 0)
+        text_content = getattr(segment, 'text', segment['text'] if isinstance(segment, dict) else "").strip()
+        
+        start = format_timestamp(start_time)
+        end = format_timestamp(end_time)
+        
+        srt_content += f"{i}\n{start} --> {end}\n{text_content}\n\n"
+    return srt_content
 
 # Tarayıcının bu sunucuya erişmesine izin ver
 app.add_middleware(
@@ -24,7 +59,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# API key'i .env dosyasından al, yoksa fallback olarak hardcoded key kullan
+api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=api_key)
+
+# Root endpoint
+@app.get("/")
+async def root():
+    return {
+        "message": "Video Altyazı API'si çalışıyor!",
+        "docs": "/docs",
+        "endpoints": {
+            "upload_video": "POST /upload-video/",
+            "remove_background": "POST /remove-background/",
+            "detect_language": "POST /detect-language/",
+            "translate_srt": "POST /translate-srt/"
+        }
+    }
 
 # Request modelleri
 class DetectLanguageRequest(BaseModel):
@@ -36,7 +87,7 @@ class TranslateSRTRequest(BaseModel):
 
 @app.post("/upload-video/")
 async def create_subtitle(file: UploadFile = File(...)):
-    print(f"Videoyu aldım: {file.filename}")
+    logger.info(f"Videoyu aldım: {file.filename}")
     
     # Dosya isimleri
     video_filename = f"temp_{file.filename}"
@@ -48,39 +99,64 @@ async def create_subtitle(file: UploadFile = File(...)):
 
     try:
         # 2. Videodan sesi ayıkla (MoviePy kullanarak)
-        print("Ses ayıklanıyor (FFmpeg)...")
+        logger.info("Ses ayıklanıyor (FFmpeg)...")
         video = VideoFileClip(video_filename)
         video.audio.write_audiofile(audio_filename, codec='mp3', logger=None)
         video.close()
 
         # 3. Sesi OpenAI'ya gönder
-        print("OpenAI Whisper servisine gönderiliyor...")
-        audio_file = open(audio_filename, "rb")
+        logger.info("OpenAI Whisper servisine gönderiliyor...")
+        with open(audio_filename, "rb") as audio_file:
+            # verbose_json formatı kullanarak dil bilgisini de alıyoruz
+            transcript_response = client.audio.transcriptions.create(
+                model="whisper-1", 
+                file=audio_file, 
+                response_format="verbose_json"
+            )
         
-        transcript = client.audio.transcriptions.create(
-            model="whisper-1", 
-            file=audio_file, 
-            response_format="srt"
-        )
+        # Dil ve Segmentleri al
+        # OpenAI v1.x dönüşü obje veya dict olabilir, güvenli erişim sağlayalım
+        detected_language = getattr(transcript_response, 'language', None)
+        if detected_language is None and isinstance(transcript_response, dict):
+             detected_language = transcript_response.get('language', 'unknown')
+        
+        segments = getattr(transcript_response, 'segments', [])
+        if not segments and isinstance(transcript_response, dict):
+             segments = transcript_response.get('segments', [])
 
-        print("Altyazı başarıyla oluşturuldu!")
-        return {"status": "success", "srt_content": transcript}
+        logger.info(f"Whisper tarafından tespit edilen dil: {detected_language}")
+        
+        # SRT oluştur
+        srt_content = segments_to_srt(segments)
+
+        logger.info("Altyazı başarıyla oluşturuldu!")
+        # detected_language bilgisini de dönüyoruz
+        return {"status": "success", "srt_content": srt_content, "detected_language": detected_language}
 
     except Exception as e:
-        print(f"HATA OLUŞTU: {e}")
+        logger.error(f"HATA OLUŞTU: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
         return {"status": "error", "message": str(e)}
 
     finally:
-        # Temizlik: Geçici dosyaları sil
-        if os.path.exists(video_filename):
-            os.remove(video_filename)
-        if os.path.exists(audio_filename):
-            os.remove(audio_filename)
+        # Temizlik: Geçici dosyaları sil (dosyalar kapatıldıktan sonra)
+        try:
+            if os.path.exists(video_filename):
+                os.remove(video_filename)
+        except Exception as e:
+            logger.error(f"Video dosyası silinemedi: {e}")
+        
+        try:
+            if os.path.exists(audio_filename):
+                os.remove(audio_filename)
+        except Exception as e:
+            logger.error(f"Ses dosyası silinemedi: {e}")
 
 @app.post("/remove-background/")
 async def remove_background(file: UploadFile = File(...)):
     """Görsel arka planını kaldırır - GrabCut algoritması ile"""
-    print(f"Görsel alındı: {file.filename}")
+    logger.info(f"Görsel alındı: {file.filename}")
     
     try:
         # Görseli oku
@@ -88,7 +164,7 @@ async def remove_background(file: UploadFile = File(...)):
         nparr = np.frombuffer(image_data, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         
-        print("Arka plan kaldırılıyor (GrabCut)...")
+        logger.info("Arka plan kaldırılıyor (GrabCut)...")
         
         # GrabCut için maske oluştur
         mask = np.zeros(img.shape[:2], np.uint8)
@@ -117,23 +193,26 @@ async def remove_background(file: UploadFile = File(...)):
         output_image.save(img_byte_arr, format='PNG')
         img_byte_arr.seek(0)
         
-        print("Arka plan başarıyla kaldırıldı!")
+        logger.info("Arka plan başarıyla kaldırıldı!")
         return StreamingResponse(img_byte_arr, media_type="image/png")
         
     except Exception as e:
-        print(f"HATA OLUŞTU: {e}")
+        logger.error(f"HATA OLUŞTU: {e}")
         import traceback
-        traceback.print_exc()
+        logger.error(traceback.format_exc())
         return {"status": "error", "message": str(e)}
 
 @app.post("/detect-language/")
 async def detect_language(request: DetectLanguageRequest):
     """SRT içeriğindeki dili otomatik algılar"""
     try:
+        logger.info("Dil tespiti isteği alındı")
         # İlk birkaç altyazı metnini al
         lines = request.srt_content.strip().split('\n')
         sample_text = ' '.join([line for line in lines if line and not '-->' in line and not line.isdigit()])[:500]
         
+        logger.info(f"Analiz edilecek örnek metin (ilk 100): {sample_text[:100]}")
+
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
@@ -144,18 +223,18 @@ async def detect_language(request: DetectLanguageRequest):
         )
         
         detected_lang = response.choices[0].message.content.strip().lower()
-        print(f"Tespit edilen dil: {detected_lang}")
+        logger.info(f"Tespit edilen dil: {detected_lang}")
         return {"status": "success", "language": detected_lang}
         
     except Exception as e:
-        print(f"Dil tespiti hatası: {e}")
+        logger.error(f"Dil tespiti hatası: {e}")
         return {"status": "error", "message": str(e)}
 
 @app.post("/translate-srt/")
 async def translate_srt(request: TranslateSRTRequest):
     """SRT içeriğini hedef dile çevirir, zaman kodları korunur"""
     try:
-        print(f"SRT {request.target_language} diline çevriliyor...")
+        logger.info(f"SRT {request.target_language} diline çevriliyor...")
         
         # SRT bloklarını ayır
         blocks = request.srt_content.strip().split('\n\n')
@@ -192,13 +271,13 @@ async def translate_srt(request: TranslateSRTRequest):
             translated_blocks.append(translated_block)
         
         translated_srt = '\n\n'.join(translated_blocks)
-        print(f"Çeviri tamamlandı!")
+        logger.info(f"Çeviri tamamlandı!")
         return {"status": "success", "translated_srt": translated_srt}
         
     except Exception as e:
-        print(f"Çeviri hatası: {e}")
+        logger.error(f"Çeviri hatası: {e}")
         import traceback
-        traceback.print_exc()
+        logger.error(traceback.format_exc())
         return {"status": "error", "message": str(e)}
 
 if __name__ == "__main__":
